@@ -1,1 +1,23 @@
-<p>models works!</p>
+<div class="container mt-5">
+  <h2>Your Uploaded Models</h2>
+
+  <div *ngIf="models.length === 0" class="text-muted">
+    No models uploaded yet.
+  </div>
+
+  <div class="row mt-4" *ngFor="let model of models">
+    <div class="col-8">
+      <strong>Model:</strong> {{ model.fileUrl }}
+      <br />
+      <a [href]="model.fileUrl" target="_blank">View .glb</a>
+    </div>
+    <div class="col-4">
+      <img
+        [src]="'http://localhost:5151/api/qr/' + model.id"
+        alt="QR Code"
+        class="img-thumbnail"
+        width="120"
+      />
+    </div>
+  </div>
+</div>
