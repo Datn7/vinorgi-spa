@@ -36,4 +36,13 @@ export class ArViewerComponent implements OnInit {
         });
     }
   }
+
+  enterAR(): void {
+    const viewer: any = document.querySelector('model-viewer');
+    if (viewer && viewer.activateAR) {
+      viewer.activateAR();
+    } else {
+      alert('AR mode not supported on this device.');
+    }
+  }
 }
