@@ -21,3 +21,10 @@
     </div>
   </div>
 </div>
+
+<div class="upload-section">
+  <input type="file" (change)="onFileSelected($event)" accept=".glb" />
+  <button (click)="uploadModel()" [disabled]="!selectedFile">
+    Upload .glb
+  </button>
+</div>
