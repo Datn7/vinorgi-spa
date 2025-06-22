@@ -1,30 +1,46 @@
 <div class="container mt-5">
-  <h2>Your Uploaded Models</h2>
+  <h2 class="mb-4 text-center">Your Uploaded Models</h2>
 
-  <div *ngIf="models.length === 0" class="text-muted">
+  <div *ngIf="models.length === 0" class="text-muted text-center">
     No models uploaded yet.
   </div>
 
-  <div class="row mt-4" *ngFor="let model of models">
-    <div class="col-8">
-      <strong>Model:</strong> {{ model.fileUrl }}
-      <br />
-      <a [href]="model.fileUrl" target="_blank">View .glb</a>
+  <div class="row g-3" *ngFor="let model of models">
+    <div class="col-md-8 d-flex align-items-center">
+      <div>
+        <strong class="text-primary">Model:</strong>
+        <span class="text-break">{{ model.fileUrl }}</span>
+        <br />
+        <a [href]="model.fileUrl" target="_blank" class="btn btn-link p-0"
+          >View .glb</a
+        >
+      </div>
     </div>
-    <div class="col-4">
+    <div class="col-md-4 text-center">
       <img
         [src]="'http://localhost:5151/api/qr/' + model.id"
         alt="QR Code"
-        class="img-thumbnail"
-        width="120"
+        class="img-fluid qr-image"
       />
     </div>
   </div>
-</div>
 
-<div class="upload-section">
-  <input type="file" (change)="onFileSelected($event)" accept=".glb" />
-  <button (click)="uploadModel()" [disabled]="!selectedFile">
-    Upload .glb
-  </button>
+  <div class="upload-section mt-5 p-4 border rounded shadow-sm">
+    <label class="form-label fw-bold">Upload new .glb model</label>
+    <div class="d-flex flex-column flex-sm-row align-items-center gap-2">
+      <input
+        type="file"
+        (change)="onFileSelected($event)"
+        accept=".glb"
+        class="form-control"
+      />
+      <button
+        (click)="uploadModel()"
+        [disabled]="!selectedFile"
+        class="btn btn-primary"
+      >
+        Upload .glb
+      </button>
+    </div>
+  </div>
 </div>

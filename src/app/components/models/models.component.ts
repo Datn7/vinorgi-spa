@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-models',
+  standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './models.component.html',
   styleUrl: './models.component.scss',
@@ -17,12 +18,45 @@ export class ModelsComponent {
   constructor(private modelService: ModelService, private http: HttpClient) {}
 
   ngOnInit() {
+    if (typeof window !== 'undefined') {
+      this.tryLoadModels(0);
+    }
+  }
+
+  /**
+   * Attempts to load models once token is found.
+   */
+  tryLoadModels(attempts: number) {
+    const token = localStorage.getItem('auth_token');
+
+    if (token) {
+      this.fetchModels();
+    } else if (attempts < 5) {
+      console.log(`No token found. Retrying (${attempts + 1}/5)...`);
+      setTimeout(() => this.tryLoadModels(attempts + 1), 500);
+    } else {
+      console.warn('Token not found after retries. Models not loaded.');
+    }
+  }
+
+  /**
+   * Actually fetches models from API.
+   */
+  fetchModels() {
     this.modelService.getModels().subscribe({
-      next: (models) => (this.models = models),
-      error: (err) => console.error('Failed to fetch models', err),
+      next: (models) => {
+        this.models = models;
+        console.log('Models loaded:', models);
+      },
+      error: (err) => {
+        console.error('Failed to fetch models', err);
+      },
     });
   }
 
+  /**
+   * Called when file is selected in the UI.
+   */
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
@@ -30,13 +64,20 @@ export class ModelsComponent {
     }
   }
 
+  /**
+   * Uploads the selected model to the API.
+   */
   uploadModel(): void {
     if (!this.selectedFile) return;
 
     const formData = new FormData();
     formData.append('file', this.selectedFile);
 
-    const token = localStorage.getItem('token'); // or 'auth_token' if you're using that key
+    const token = localStorage.getItem('auth_token');
+    if (!token) {
+      alert('No auth token found. Please log in again.');
+      return;
+    }
 
     this.http
       .post<any>('http://localhost:5151/api/models/upload', formData, {
@@ -48,10 +89,12 @@ export class ModelsComponent {
         next: (res) => {
           console.log('Upload successful', res);
           alert('Model uploaded!');
+          this.fetchModels(); // refresh list after upload
+          this.selectedFile = null; // reset file input
         },
         error: (err) => {
           console.error('Upload failed', err);
-          alert('Upload failed: ' + (err.error || 'Server error'));
+          alert('Upload failed: ' + (err.error?.message || 'Server error'));
         },
       });
   }
