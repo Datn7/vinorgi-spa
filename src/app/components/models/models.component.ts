@@ -68,7 +68,10 @@ export class ModelsComponent {
    * Uploads the selected model to the API.
    */
   uploadModel(): void {
-    if (!this.selectedFile) return;
+    if (!this.selectedFile) {
+      alert('Please select a .glb file first!');
+      return;
+    }
 
     const formData = new FormData();
     formData.append('file', this.selectedFile);
@@ -89,12 +92,12 @@ export class ModelsComponent {
         next: (res) => {
           console.log('Upload successful', res);
           alert('Model uploaded!');
-          this.fetchModels(); // refresh list after upload
-          this.selectedFile = null; // reset file input
+          this.fetchModels();
+          this.selectedFile = null;
         },
         error: (err) => {
           console.error('Upload failed', err);
-          alert('Upload failed: ' + (err.error?.message || 'Server error'));
+          alert(`Upload failed: ${err.error?.message || 'Server error'}`);
         },
       });
   }
