@@ -1,0 +1,29 @@
+.navbar {
+  background-color: #222;
+
+  .navbar-brand {
+    font-weight: bold;
+    font-size: 1.25rem;
+    color: #fff;
+
+    &:hover {
+      color: #ffdd57;
+    }
+  }
+
+  .nav-link {
+    color: #fff;
+
+    &:hover {
+      color: #ffdd57;
+    }
+  }
+
+  .navbar-toggler {
+    border-color: #ffdd57;
+
+    .navbar-toggler-icon {
+      filter: invert(100%);
+    }
+  }
+}
