@@ -23,9 +23,6 @@ export class ModelsComponent {
     }
   }
 
-  /**
-   * Attempts to load models once token is found.
-   */
   tryLoadModels(attempts: number) {
     const token = localStorage.getItem('auth_token');
 
@@ -39,14 +36,12 @@ export class ModelsComponent {
     }
   }
 
-  /**
-   * Actually fetches models from API.
-   */
   fetchModels() {
     this.modelService.getModels().subscribe({
       next: (models) => {
         this.models = models;
         console.log('Models loaded:', models);
+        // ✅ NO NEED for ChangeDetectorRef anymore
       },
       error: (err) => {
         console.error('Failed to fetch models', err);
@@ -54,9 +49,6 @@ export class ModelsComponent {
     });
   }
 
-  /**
-   * Called when file is selected in the UI.
-   */
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
@@ -64,9 +56,6 @@ export class ModelsComponent {
     }
   }
 
-  /**
-   * Uploads the selected model to the API.
-   */
   uploadModel(): void {
     if (!this.selectedFile) {
       alert('Please select a .glb file first!');
