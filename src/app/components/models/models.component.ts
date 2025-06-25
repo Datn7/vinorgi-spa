@@ -1,50 +1,58 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Model3D, ModelService } from '../../shared/model.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { RouterModule } from '@angular/router'; // ✅ Needed for [routerLink]
 
 @Component({
   selector: 'app-models',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [
+    FormsModule,
+    CommonModule,
+    RouterModule, // ✅ Required for routing links
+  ],
   templateUrl: './models.component.html',
-  styleUrl: './models.component.scss',
+  styleUrls: ['./models.component.scss'], // ✅ fixed typo: was 'styleUrl'
 })
-export class ModelsComponent {
+export class ModelsComponent implements OnInit {
   models: Model3D[] = [];
-  selectedFile!: File | null;
+  selectedFile: File | null = null;
 
-  constructor(private modelService: ModelService, private http: HttpClient) {}
+  constructor(
+    private modelService: ModelService,
+    private http: HttpClient,
+    private cdRef: ChangeDetectorRef
+  ) {}
 
-  ngOnInit() {
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('auth_token');
-      if (token) {
-        this.tryLoadModels(0);
-      }
-    }
+  ngOnInit(): void {
+    this.waitForTokenAndLoadModels();
   }
 
-  tryLoadModels(attempts: number) {
+  private waitForTokenAndLoadModels(retries = 0): void {
+    if (typeof window === 'undefined') {
+      return; // SSR environment — skip loading models
+    }
+
     const token = localStorage.getItem('auth_token');
 
     if (token) {
       this.fetchModels();
-    } else if (attempts < 5) {
-      console.log(`No token found. Retrying (${attempts + 1}/5)...`);
-      setTimeout(() => this.tryLoadModels(attempts + 1), 500);
+    } else if (retries < 5) {
+      console.log(`Waiting for token... retry #${retries + 1}`);
+      setTimeout(() => this.waitForTokenAndLoadModels(retries + 1), 500);
     } else {
       console.warn('Token not found after retries. Models not loaded.');
     }
   }
 
-  fetchModels() {
+  private fetchModels(): void {
     this.modelService.getModels().subscribe({
       next: (models) => {
         this.models = models;
         console.log('Models loaded:', models);
-        // ✅ NO NEED for ChangeDetectorRef anymore
+        this.cdRef.detectChanges(); // ✅ Trigger view update
       },
       error: (err) => {
         console.error('Failed to fetch models', err);
@@ -84,8 +92,8 @@ export class ModelsComponent {
         next: (res) => {
           console.log('Upload successful', res);
           alert('Model uploaded!');
-          this.fetchModels();
           this.selectedFile = null;
+          this.fetchModels(); // Refresh list
         },
         error: (err) => {
           console.error('Upload failed', err);
