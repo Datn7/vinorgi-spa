@@ -19,7 +19,10 @@ export class ModelsComponent {
 
   ngOnInit() {
     if (typeof window !== 'undefined') {
-      this.tryLoadModels(0);
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        this.tryLoadModels(0);
+      }
     }
   }
 

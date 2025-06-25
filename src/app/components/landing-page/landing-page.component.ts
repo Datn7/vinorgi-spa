@@ -12,12 +12,7 @@ import { Router, RouterModule } from '@angular/router';
 export class LandingPageComponent {
   constructor(private router: Router) {}
 
-  onGetStarted(): void {
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      this.router.navigate(['/upload']);
-    } else {
-      this.router.navigate(['/login']);
-    }
+  onGetStarted() {
+    this.router.navigate(['/register']);
   }
 }
