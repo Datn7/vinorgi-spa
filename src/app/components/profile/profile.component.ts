@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent {
-  user: any;
+  user: any = null;
 
   constructor(
     private router: Router,
@@ -20,19 +20,13 @@ export class ProfileComponent {
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       const token = localStorage.getItem('auth_token');
-      this.user = token ? this.parseToken(token) : null;
-    }
-  }
-
-  private parseToken(token: string): any {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return {
-        email: payload.email,
-        userId: payload.nameid,
-      };
-    } catch {
-      return {};
+      if (token) {
+        try {
+          this.user = this.parseJwt(token);
+        } catch (error) {
+          console.error('Error decoding JWT', error);
+        }
+      }
     }
   }
 
@@ -42,5 +36,17 @@ export class ProfileComponent {
       localStorage.removeItem('isLoggedIn');
       this.router.navigate(['/login']);
     }
+  }
+
+  private parseJwt(token: string): any {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
   }
 }
