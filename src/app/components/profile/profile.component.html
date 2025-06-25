@@ -1,0 +1,10 @@
+<div class="container mt-5" *ngIf="user">
+  <h2 class="mb-3">Welcome, {{ user.email }}</h2>
+  <p><strong>User ID:</strong> {{ user.userId }}</p>
+  <p><strong>Email:</strong> {{ user.email }}</p>
+
+  <button (click)="logout()" class="btn btn-danger mt-3">Logout</button>
+</div>
+<div *ngIf="!user" class="text-center mt-5">
+  <h3>You are not logged in</h3>
+</div>
