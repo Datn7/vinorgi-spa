@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { RouterModule } from '@angular/router'; // ✅ Needed for [routerLink]
+import { GlbViewerComponent } from '../glb-viewer/glb-viewer.component';
 
 @Component({
   selector: 'app-models',
@@ -11,7 +12,8 @@ import { RouterModule } from '@angular/router'; // ✅ Needed for [routerLink]
   imports: [
     FormsModule,
     CommonModule,
-    RouterModule, // ✅ Required for routing links
+    RouterModule, // Required for routing links
+    GlbViewerComponent,
   ],
   templateUrl: './models.component.html',
   styleUrls: ['./models.component.scss'], // ✅ fixed typo: was 'styleUrl'

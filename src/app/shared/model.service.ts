@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 
 export interface Model3D {
   id: number;
+  fileName: string;
+  qrCodeUrl?: string;
   fileUrl: string;
   uploadedAt: string;
 }

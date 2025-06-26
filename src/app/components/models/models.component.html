@@ -30,6 +30,11 @@
             View in AR
           </a>
         </div>
+
+        <app-glb-viewer
+          [modelUrl]="'http://localhost:5151' + model.fileUrl"
+        ></app-glb-viewer>
+
         <div class="card-footer text-center bg-white">
           <img
             [src]="'http://localhost:5151/api/qr/' + model.id"
