@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 export interface Model3D {
   id: number;
@@ -17,5 +18,9 @@ export class ModelService {
 
   getModels() {
     return this.http.get<Model3D[]>(this.apiUrl);
+  }
+
+  deleteModel(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

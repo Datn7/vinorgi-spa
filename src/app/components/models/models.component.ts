@@ -3,20 +3,15 @@ import { Model3D, ModelService } from '../../shared/model.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { RouterModule } from '@angular/router'; // ✅ Needed for [routerLink]
+import { RouterModule } from '@angular/router';
 import { GlbViewerComponent } from '../glb-viewer/glb-viewer.component';
 
 @Component({
   selector: 'app-models',
   standalone: true,
-  imports: [
-    FormsModule,
-    CommonModule,
-    RouterModule, // Required for routing links
-    GlbViewerComponent,
-  ],
+  imports: [FormsModule, CommonModule, RouterModule, GlbViewerComponent],
   templateUrl: './models.component.html',
-  styleUrls: ['./models.component.scss'], // ✅ fixed typo: was 'styleUrl'
+  styleUrls: ['./models.component.scss'],
 })
 export class ModelsComponent implements OnInit {
   models: Model3D[] = [];
@@ -34,7 +29,7 @@ export class ModelsComponent implements OnInit {
 
   private waitForTokenAndLoadModels(retries = 0): void {
     if (typeof window === 'undefined') {
-      return; // SSR environment — skip loading models
+      return;
     }
 
     const token = localStorage.getItem('auth_token');
@@ -54,7 +49,7 @@ export class ModelsComponent implements OnInit {
       next: (models) => {
         this.models = models;
         console.log('Models loaded:', models);
-        this.cdRef.detectChanges(); // ✅ Trigger view update
+        this.cdRef.detectChanges();
       },
       error: (err) => {
         console.error('Failed to fetch models', err);
@@ -95,12 +90,35 @@ export class ModelsComponent implements OnInit {
           console.log('Upload successful', res);
           alert('Model uploaded!');
           this.selectedFile = null;
-          this.fetchModels(); // Refresh list
+          this.fetchModels();
         },
         error: (err) => {
           console.error('Upload failed', err);
           alert(`Upload failed: ${err.error?.message || 'Server error'}`);
         },
       });
+  }
+
+  deleteModel(id: number): void {
+    const confirmed = confirm('Are you sure you want to delete this model?');
+    if (!confirmed) return;
+
+    const token = localStorage.getItem('auth_token');
+    if (!token) {
+      alert('No auth token found. Please log in again.');
+      return;
+    }
+
+    this.modelService.deleteModel(id).subscribe({
+      next: () => {
+        console.log(`Model ${id} deleted`);
+        this.models = this.models.filter((model) => model.id !== id);
+        this.cdRef.detectChanges();
+      },
+      error: (err) => {
+        console.error('Delete failed', err);
+        alert(`Delete failed: ${err.error?.message || 'Server error'}`);
+      },
+    });
   }
 }
