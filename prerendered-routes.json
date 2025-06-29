@@ -1,0 +1,11 @@
+{
+  "routes": {
+    "/vinorgi-spa": {},
+    "/vinorgi-spa/ar-viewer": {},
+    "/vinorgi-spa/glb-viewer": {},
+    "/vinorgi-spa/login": {},
+    "/vinorgi-spa/models": {},
+    "/vinorgi-spa/profile": {},
+    "/vinorgi-spa/register": {}
+  }
+}
