@@ -23,4 +23,9 @@ export class ModelService {
   deleteModel(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  getModelsByUser(userId: string): Observable<any[]> {
+  return this.http.get<any[]>(`${this.apiUrl}/models/user/${userId}`);
+}
+
 }

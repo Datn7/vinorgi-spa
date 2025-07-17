@@ -3,11 +3,12 @@ import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
 import { ModelService } from '../../shared/model.service';
+import { GlbViewerComponent } from "../glb-viewer/glb-viewer.component";
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, GlbViewerComponent],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })
@@ -33,6 +34,19 @@ models: any[] = [];
           console.error('Error decoding JWT', error);
         }
       }
+    }
+
+        this.user = this.authService.getCurrentUser();
+    this.loadModels();
+  }
+
+  
+  loadModels(): void {
+    if (this.user?.id) {
+      this.modelService.getModelsByUser(this.user.id).subscribe({
+        next: (res) => this.models = res,
+        error: (err) => console.error("Failed to load models", err)
+      });
     }
   }
 
