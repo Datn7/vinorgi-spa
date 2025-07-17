@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -15,10 +16,19 @@ export class AuthService {
       .pipe(tap((res) => this.setToken(res.token)));
   }
 
-  login(data: { email: string; password: string }) {
+  login(email: string, password: string): Observable<any> {
     return this.http
-      .post<any>(`${this.apiUrl}/login`, data)
-      .pipe(tap((res) => this.setToken(res.token)));
+      .post<any>(`${this.apiUrl}/login`, { email, password })
+      .pipe(
+        tap((res) => {
+          this.setToken(res.token);
+
+          //  this is crucial
+          if (res.user) {
+            localStorage.setItem('user', JSON.stringify(res.user));
+          }
+        })
+      );
   }
 
   logout() {
@@ -38,6 +48,18 @@ export class AuthService {
   }
 
   getCurrentUser() {
-  return JSON.parse(localStorage.getItem('user') || '{}');
-}
+    if (typeof window === 'undefined') return null;
+
+    const raw = localStorage.getItem('user');
+
+    // If the string is literally "undefined", don't parse
+    if (!raw || raw === 'undefined') return null;
+
+    try {
+      return JSON.parse(raw);
+    } catch {
+      console.warn('Invalid JSON in localStorage for key "user"');
+      return null;
+    }
+  }
 }

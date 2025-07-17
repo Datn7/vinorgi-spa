@@ -25,7 +25,10 @@ export class ModelService {
   }
 
   getModelsByUser(userId: string): Observable<any[]> {
-  return this.http.get<any[]>(`${this.apiUrl}/models/user/${userId}`);
-}
+    return this.http.get<any[]>(`${this.apiUrl}/models/user/${userId}`);
+  }
 
+  getModelsForUser(userId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/models/user/${userId}`);
+  }
 }

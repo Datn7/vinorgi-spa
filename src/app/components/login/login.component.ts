@@ -18,7 +18,7 @@ export class LoginComponent {
   constructor(private auth: AuthService, private router: Router) {}
 
   login() {
-    this.auth.login({ email: this.email, password: this.password }).subscribe({
+    this.auth.login(this.email, this.password).subscribe({
       next: () => this.router.navigate(['/profile']),
       error: (err) => (this.error = 'Login failed'),
     });

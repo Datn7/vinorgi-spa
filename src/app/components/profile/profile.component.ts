@@ -3,7 +3,7 @@ import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
 import { ModelService } from '../../shared/model.service';
-import { GlbViewerComponent } from "../glb-viewer/glb-viewer.component";
+import { GlbViewerComponent } from '../glb-viewer/glb-viewer.component';
 
 @Component({
   selector: 'app-profile',
@@ -14,8 +14,7 @@ import { GlbViewerComponent } from "../glb-viewer/glb-viewer.component";
 })
 export class ProfileComponent {
   user: any;
-models: any[] = [];
-
+  models: any[] = [];
 
   constructor(
     private router: Router,
@@ -36,16 +35,21 @@ models: any[] = [];
       }
     }
 
-        this.user = this.authService.getCurrentUser();
-    this.loadModels();
+    this.user = this.authService.getCurrentUser(); //
+
+    if (this.user) {
+      this.modelService.getModelsForUser(this.user.id).subscribe({
+        next: (res) => (this.models = res),
+        error: (err) => console.error('Model load failed', err),
+      });
+    }
   }
 
-  
   loadModels(): void {
     if (this.user?.id) {
       this.modelService.getModelsByUser(this.user.id).subscribe({
-        next: (res) => this.models = res,
-        error: (err) => console.error("Failed to load models", err)
+        next: (res) => (this.models = res),
+        error: (err) => console.error('Failed to load models', err),
       });
     }
   }
@@ -69,5 +73,4 @@ models: any[] = [];
     );
     return JSON.parse(jsonPayload);
   }
-  
 }
