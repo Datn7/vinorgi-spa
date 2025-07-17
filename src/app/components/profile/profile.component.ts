@@ -1,6 +1,8 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../../auth/auth.service';
+import { ModelService } from '../../shared/model.service';
 
 @Component({
   selector: 'app-profile',
@@ -10,10 +12,14 @@ import { Router } from '@angular/router';
   styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent {
-  user: any = null;
+  user: any;
+models: any[] = [];
+
 
   constructor(
     private router: Router,
+    private authService: AuthService,
+    private modelService: ModelService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -49,4 +55,5 @@ export class ProfileComponent {
     );
     return JSON.parse(jsonPayload);
   }
+  
 }

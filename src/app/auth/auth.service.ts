@@ -36,4 +36,8 @@ export class AuthService {
   private setToken(token: string) {
     localStorage.setItem(this.tokenKey, token);
   }
+
+  getCurrentUser() {
+  return JSON.parse(localStorage.getItem('user') || '{}');
+}
 }
