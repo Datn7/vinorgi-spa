@@ -1,14 +1,15 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, PLATFORM_ID } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
 import { ModelService } from '../../shared/model.service';
 import { GlbViewerComponent } from '../glb-viewer/glb-viewer.component';
+import { ModelsComponent } from '../models/models.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, GlbViewerComponent],
+  imports: [CommonModule, GlbViewerComponent, ModelsComponent, RouterModule],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })

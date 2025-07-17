@@ -1,5 +1,5 @@
 <div class="container">
-  <h2>Welcome, {{ user?.email || 'User' }}</h2>
+  <h2>Welcome, {{ user?.email || "User" }}</h2>
   <p><strong>User ID:</strong> {{ user?.id }}</p>
   <p><strong>Email:</strong> {{ user?.email }}</p>
 
@@ -7,19 +7,9 @@
 
   <hr />
 
-  <h3>Your Models</h3>
-  <div *ngIf="models.length > 0; else noModels">
-    <div class="model-card" *ngFor="let model of models">
-      <h4>{{ model.fileName }}</h4>
-      <p>Uploaded at: {{ model.uploadedAt | date:'short' }}</p>
-
-      <div style="width: 300px; height: 300px;">
-        <app-glb-viewer [modelUrl]="model.fileUrl"></app-glb-viewer>
-      </div>
-    </div>
-  </div>
-
   <ng-template #noModels>
     <p>You haven't uploaded any models yet.</p>
   </ng-template>
+
+  <app-models></app-models>
 </div>
