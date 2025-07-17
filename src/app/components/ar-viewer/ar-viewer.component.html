@@ -1,41 +1,34 @@
-<!-- AR Viewer for mobile -->
-<model-viewer
-  *ngIf="isBrowser && modelUrl"
-  [attr.src]="modelUrl"
-  [attr.ios-src]="modelUrl"
-  alt="3D model"
-  ar
-  ar-modes="webxr scene-viewer quick-look"
-  auto-rotate
-  camera-controls
-  disable-tap
-  touch-action="pan-y"
-  interaction-prompt="none"
-  camera-orbit="0deg 75deg 2.5m"
-  min-camera-orbit="auto 75deg auto"
-  max-camera-orbit="auto 75deg auto"
-  style="width: 100vw; height: 90vh; background: black"
+<a-scene
+  embedded
+  arjs="sourceType: webcam; debugUIEnabled: false;"
+  renderer="logarithmicDepthBuffer: true;"
+  vr-mode-ui="enabled: false"
+  device-orientation-permission-ui="enabled: true"
+  xrweb="allowed: true"
 >
-</model-viewer>
+  <a-assets>
+    <a-asset-item id="model" src="/assets/your-model.glb"></a-asset-item>
+  </a-assets>
 
-<div *ngIf="isBrowser && modelUrl" style="text-align: center; margin-top: 1rem">
-  <button
-    (click)="enterAR()"
-    style="
-      padding: 12px 24px;
-      font-size: 16px;
-      border: none;
-      background: #28a745;
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-    "
+  <!-- World Tracking: Place on flat surface -->
+  <a-entity
+    gltf-model="#model"
+    position="0 0 0"
+    scale="0.5 0.5 0.5"
+    ar-placement
+    gesture-handler
   >
-    View in AR
-  </button>
-</div>
+  </a-entity>
 
-<div style="color: black; padding: 1rem; font-weight: bold">
-  isBrowser: {{ isBrowser }}<br />
-  modelUrl: {{ modelUrl }}
-</div>
+  <a-camera camera look-controls></a-camera>
+</a-scene>
+
+<script>
+  AFRAME.registerComponent("gesture-handler", {
+    init: function () {
+      this.el.addEventListener("click", (e) => {
+        console.log("Model clicked", e);
+      });
+    },
+  });
+</script>
